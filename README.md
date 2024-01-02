@@ -1,6 +1,6 @@
 ## Como rodar o projeto
 
-- Copiar o arquivo `.env.example` e informar os valores pedidos;
+- Copiar o arquivo `.env.example` para `.env` e informar os valores pedidos;
 - Instalar as dependências do projeto:
 ```bash
 pip install -r requirements.txt
