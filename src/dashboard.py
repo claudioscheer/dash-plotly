@@ -1,3 +1,4 @@
+import os
 import requests
 import logging
 from dotenv import load_dotenv
@@ -9,6 +10,11 @@ from integrations.brapi import fetch_stock_data
 
 load_dotenv()
 logging.basicConfig(level=logging.DEBUG)
+
+if not os.path.exists("./data/braziljournal.csv"):
+    raise Exception(
+        "Missing news data file. Run `python src/integrations/braziljournal.py CEAB3 WEGE3 PETR4` first."
+    )
 
 df = pd.read_csv("./data/braziljournal.csv")
 
@@ -32,7 +38,7 @@ app.layout = html.Div(
                 ),
                 dcc.Loading(
                     id="loading-graph",
-                    type="circle",
+                    type="default",
                     children=[
                         html.Div(id="loading-output-graph"),
                         dcc.Graph(id="stock-graph"),
