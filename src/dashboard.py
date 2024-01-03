@@ -128,7 +128,16 @@ def update_graph(value):
             )
         ]
     )
-    fig.update_layout(xaxis_rangeslider_visible=False)
+    fig.update_layout(
+        xaxis_rangeslider_visible=False,
+        autosize=True,
+        margin=dict(l=0, r=0, b=8, t=8, pad=0),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+    )
+    fig.update_xaxes(showgrid=False, zeroline=False)
+    fig.update_yaxes(showgrid=False, zeroline=False)
+
     return fig
 
 
