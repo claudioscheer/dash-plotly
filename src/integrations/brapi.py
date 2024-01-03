@@ -32,7 +32,7 @@ def get_token():
 
 def fetch_stock_data(stock, token):
     requests_retry = requests.Session()
-    retries = RetryIfNot200(total=5, backoff_factor=0)
+    retries = RetryIfNot200(total=5, backoff_factor=2)
     requests_retry.mount("https://", HTTPAdapter(max_retries=retries))
 
     url = f"https://brapi.dev/api/quote/{stock}?range=1d&interval=1d&token={token}"
@@ -57,6 +57,8 @@ if __name__ == "__main__":
         # Data from d-1.
         stock_data = fetch_stock_data(stock, token)
         stock_historical_data = stock_data["results"][0]["historicalDataPrice"]
+        logging.debug(f"Found {len(stock_historical_data)} historical data points.")
+        logging.debug(stock_historical_data)
 
         parsed_stock_data = []
         for shd in stock_historical_data:
