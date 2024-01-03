@@ -25,7 +25,7 @@ def get_stocks_from_argv():
 def get_token():
     token = os.getenv("BRAPI_TOKEN", None)
     if token is None:
-        raise Exception("Missing BRAPI_TOKEN environment variable")
+        raise Exception("Missing BRAPI_TOKEN environment variable.")
 
     return token
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     token = get_token()
 
     stocks = get_stocks_from_argv()
-    print(f"Starting scraping for {stocks}")
+    logging.debug(f"Starting scraping for {stocks}")
 
     for stock in stocks:
         logging.debug(f"Fetching stock {stock}...")

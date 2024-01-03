@@ -39,7 +39,7 @@ def scrape_stock(stock, retry=True, timeout=10):
     ul_allnews = soup.find("ul", {"id": "allnews"})
 
     if ul_allnews is None:
-        raise Exception("Failed to find ul element with id allnews")
+        raise Exception("Failed to find ul element with id allnews.")
 
     data = []
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
     stocks = get_stocks_from_argv()
-    print(f"Starting scraping for {stocks}")
+    logging.debug(f"Starting scraping for {stocks}.")
 
     # The idea is to load the data from the CSV file if it exists, and append the new data to it.
     # Using a real database would be better, as it would allow us to query the data more easily and use transactions.

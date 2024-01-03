@@ -26,9 +26,9 @@ Quando o usuário seleciona uma ação no dashboard, eu tento buscar os dados ma
 
 ## Dados históricos das ações
 
-No site (https://backtester.com.br)[https://backtester.com.br/] são disponibilizados dados históricos das ações. Eles forcecem gratuitamente os dados dos últimos dois anos das três ações que precisamos: CEAB3, WEGE3 e PETR4. Eu usei estes dados como base para o processo de atualização do valor das ações ao longo do tempo. Os arquivos CSV estão disponíveis [aqui](./data/stocks).
+No site [https://backtester.com.br](https://backtester.com.br) são disponibilizados dados históricos das ações. Eles forcecem gratuitamente os dados dos últimos dois anos para as três ações que precisamos: CEAB3, WEGE3 e PETR4. Eu usei estes dados como base para o processo de atualização do valor das ações ao longo do tempo. Os arquivos CSV estão disponíveis [aqui](./data/stocks).
 
-Para manter os valores atualizados, podemos fazer um processo similar ao que fizemos com as notícias. Podemos rodar um script no background que busca os dados das ações para o dia `d-1` e atualize o nosso banco de dados, neste caso o arquivo CSV de cada um das ações. Portanto, para manter os valores atualizado eu utilizei a brapi. A documentação da chamada que eu realizo pra buscar os valores históricos das ações pode ser encontrada [aqui](https://brapi.dev/docs/acoes).
+Para manter os valores atualizados, podemos fazer um processo similar ao que fizemos com as notícias. Podemos rodar um script no background que busque os dados das ações para o dia `d-1` e atualize o nosso banco de dados, neste caso o arquivo CSV de cada uma das ações. Portanto, para manter os valores atualizado eu utilizei a brapi. A documentação da chamada que eu realizo pra buscar os valores históricos das ações pode ser encontrada [aqui](https://brapi.dev/docs/acoes).
 
 ### brapi
 

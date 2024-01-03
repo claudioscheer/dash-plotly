@@ -17,9 +17,14 @@ if not os.path.exists("./data/braziljournal.csv"):
 news_df = pd.read_csv("./data/braziljournal.csv")
 
 
+# Since this df is updated once a day, we can cache it for some time. In this case, for 12 hours.
 @cache_by_time(60 * 60 * 12)
 def get_stock_df(stock):
-    return pd.read_csv(f"./data/stocks/{stock}.csv")
+    stock_file = f"./data/stocks/{stock}.csv"
+    if os.path.exists(stock_file):
+        return pd.read_csv(stock_file)
+
+    raise Exception(f"Missing stock data for {stock}.")
 
 
 app = Dash(__name__)
