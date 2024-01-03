@@ -9,13 +9,6 @@ from lib.cache import cache_by_time
 
 logging.basicConfig(level=logging.DEBUG)
 
-if not os.path.exists("./data/braziljournal.csv"):
-    raise Exception(
-        "Missing news data file. Run `python src/integrations/braziljournal.py CEAB3 WEGE3 PETR4` first."
-    )
-
-news_df = pd.read_csv("./data/braziljournal.csv")
-
 
 # Since this df is updated once a day, we can cache it for some time. In this case, for 12 hours.
 @cache_by_time(60 * 60 * 12)
@@ -27,6 +20,14 @@ def get_stock_df(stock):
     raise Exception(f"Missing stock data for {stock}.")
 
 
+def get_news_df():
+    news_file = f"./data/braziljournal.csv"
+    if os.path.exists(news_file):
+        return pd.read_csv(news_file)
+
+    raise Exception(f"Missing news data")
+
+
 app = Dash(__name__)
 app.layout = html.Div(
     [
@@ -36,8 +37,8 @@ app.layout = html.Div(
                     children=[
                         html.Div(style={"flex": 1}),
                         dcc.Dropdown(
-                            news_df.stock.unique(),
-                            news_df.stock.unique()[0],
+                            ["CEAB3", "PETR4", "WEGE3"],
+                            "CEAB3",
                             id="available-stocks",
                             style={"flex": 1},
                         ),
@@ -77,9 +78,10 @@ app.layout = html.Div(
     style={
         "display": "flex",
         "flexDirection": "row",
-        # "align-items": "center",
+        # "alignItems": "center",
         # "width": "100%",
         # "height": "100vh",
+        # "minHeight": "500px",
     },
 )
 
@@ -88,13 +90,15 @@ app.layout = html.Div(
     Output("stock-news", "children"),
     Input("available-stocks", "value"),
 )
-def update_news(value):
+def update_news(stock):
     try:
-        scraped_data = scrape_stock(value, retry=False, timeout=1)
-        logging.debug(f"Scraped {value} successfully.")
+        scraped_data = scrape_stock(stock, retry=False, timeout=1)
+        logging.debug(f"Scraped {stock} successfully.")
     except requests.exceptions.Timeout:
-        logging.debug(f"Scraping {value} timed out. Using last data available.")
-        scraped_data = news_df[news_df.stock == value].to_dict("records")
+        logging.debug(f"Scraping {stock} timed out. Using last data available.")
+
+        news_df = get_news_df()
+        scraped_data = news_df[news_df.stock == stock].to_dict("records")
 
     return html.Ul(
         [
@@ -114,8 +118,8 @@ def update_news(value):
 
 
 @callback(Output("stock-graph", "figure"), Input("available-stocks", "value"))
-def update_graph(value):
-    df = get_stock_df(value)
+def update_graph(stock):
+    df = get_stock_df(stock)
 
     fig = go.Figure(
         data=[
