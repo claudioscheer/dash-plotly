@@ -1,14 +1,12 @@
 import os
 import requests
 import logging
-from dotenv import load_dotenv
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.graph_objects as go
 import pandas as pd
 from integrations.braziljournal import scrape_stock
-from integrations.brapi import fetch_stock_data
+from lib.cache import cache_by_time
 
-load_dotenv()
 logging.basicConfig(level=logging.DEBUG)
 
 if not os.path.exists("./data/braziljournal.csv"):
@@ -16,7 +14,13 @@ if not os.path.exists("./data/braziljournal.csv"):
         "Missing news data file. Run `python src/integrations/braziljournal.py CEAB3 WEGE3 PETR4` first."
     )
 
-df = pd.read_csv("./data/braziljournal.csv")
+news_df = pd.read_csv("./data/braziljournal.csv")
+
+
+@cache_by_time(60 * 60 * 12)
+def get_stock_df(stock):
+    return pd.read_csv(f"./data/stocks/{stock}.csv")
+
 
 app = Dash(__name__)
 app.layout = html.Div(
@@ -27,8 +31,8 @@ app.layout = html.Div(
                     children=[
                         html.Div(style={"flex": 1}),
                         dcc.Dropdown(
-                            df.stock.unique(),
-                            df.stock.unique()[0],
+                            news_df.stock.unique(),
+                            news_df.stock.unique()[0],
                             id="available-stocks",
                             style={"flex": 1},
                         ),
@@ -49,7 +53,10 @@ app.layout = html.Div(
         ),
         html.Div(
             children=[
-                html.H1(children="Notícias", style={"textAlign": "center", "marginBottom": 48}),
+                html.H1(
+                    children="Notícias",
+                    style={"textAlign": "center", "marginBottom": 48},
+                ),
                 dcc.Loading(
                     id="loading-news",
                     type="default",
@@ -82,7 +89,7 @@ def update_news(value):
         logging.debug(f"Scraped {value} successfully.")
     except requests.exceptions.Timeout:
         logging.debug(f"Scraping {value} timed out. Using last data available.")
-        scraped_data = df[df.stock == value].to_dict("records")
+        scraped_data = news_df[news_df.stock == value].to_dict("records")
 
     return html.Ul(
         [
@@ -103,20 +110,16 @@ def update_news(value):
 
 @callback(Output("stock-graph", "figure"), Input("available-stocks", "value"))
 def update_graph(value):
-    stock_data = fetch_stock_data(value)
-
-    df = pd.DataFrame(stock_data["results"][0]["historicalDataPrice"])
-    # Convert the date from epoch to datetime.
-    df["date"] = pd.to_datetime(df["date"], unit="s")
+    df = get_stock_df(value)
 
     fig = go.Figure(
         data=[
             go.Candlestick(
-                x=df["date"],
-                open=df["open"],
-                high=df["high"],
-                low=df["low"],
-                close=df["close"],
+                x=df["Date"],
+                open=df["Open"],
+                high=df["High"],
+                low=df["Low"],
+                close=df["Close"],
             )
         ]
     )
