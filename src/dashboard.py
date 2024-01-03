@@ -49,13 +49,13 @@ app.layout = html.Div(
         ),
         html.Div(
             children=[
-                html.H1(children="Notícias", style={"textAlign": "center"}),
+                html.H1(children="Notícias", style={"textAlign": "center", "marginBottom": 48}),
                 dcc.Loading(
                     id="loading-news",
                     type="default",
                     children=[
                         html.Div(id="loading-output-news"),
-                        html.Div(id="stock-news"),
+                        html.Div(id="stock-news", className="news"),
                     ],
                 ),
             ],
@@ -90,10 +90,11 @@ def update_news(value):
                 html.A(
                     children=[
                         html.P(children=item["category"]),
-                        html.H2(children=item["title"]),
+                        html.H3(children=item["title"]),
                     ],
                     href=item["link"],
-                )
+                ),
+                style={"paddingBottom": 16},
             )
             for item in scraped_data
         ]

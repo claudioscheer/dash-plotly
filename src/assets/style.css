@@ -1,0 +1,33 @@
+body {
+  font-family: sans-serif;
+}
+
+div.news ul {
+  margin: 0;
+  list-style-type: none;
+}
+
+div.news ul > li {
+  text-indent: -5px;
+}
+
+div.news ul > li:before {
+  text-indent: -5px;
+}
+
+div.news a {
+  text-decoration: none;
+  color: #000;
+}
+
+div.news a p {
+  margin: 0;
+  padding: 0;
+  font-size: 0.8em;
+  color: #4e4e4e;
+}
+
+div.news a h3 {
+  margin-top: 0;
+  text-decoration: underline;
+}
