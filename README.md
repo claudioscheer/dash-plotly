@@ -41,3 +41,8 @@ Segue o exemplo de como executar o script:
 ```bash
 python src/integrations/brapi.py CEAB3 WEGE3 PETR4
 ```
+
+## Melhorias
+
+- [ ] Buscar os dados históricos das ações a partir da data mais recente que temos no nosso banco de dados;
+- [ ] Criar um banco de dados MySQL para armazenar os dados históricos das ações e as notícias, garantindo a utilização de transações e a integridade dos dados;
