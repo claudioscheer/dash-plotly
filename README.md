@@ -34,7 +34,7 @@ Para manter os valores atualizados, podemos fazer um processo similar ao que fiz
 
 Script disponível [aqui](./src/integrations/brapi.py).
 
-Este script esta programado para buscar os valores históricos das ações para o dia `d-1` e atualizar o arquivo CSV correspondente. Podemos usar o brapi buscar informações além de `d-1`, mas precisamos de uma licença específica para períodos maiores que 3 meses. Portanto, vou assumir que iremos até a brapi uma vez por dia pra buscar os valores do dia `d-1` e manter nosso dataset atualizado.
+Este script está programado para buscar os valores históricos das ações para o dia `d-1` e atualizar o arquivo CSV correspondente. Podemos usar o brapi para buscar informações além de `d-1`, mas precisamos de uma licença paga para períodos maiores que 3 meses. Portanto, vou assumir que iremos até a brapi uma vez por dia pra buscar os valores do dia `d-1` e manter nosso dataset atualizado.
 
 Segue o exemplo de como executar o script:
 
