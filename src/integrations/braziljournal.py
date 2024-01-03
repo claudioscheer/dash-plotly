@@ -56,30 +56,37 @@ def scrape_stock(stock, retry=True, timeout=10):
     return data
 
 
+def load_data():
+    # The idea is to load the data from the CSV file if it exists, and append the new data to it.
+    # Using a real database would be better, as it would allow us to query the data more easily and use transactions.
+    if os.path.exists("./data/braziljournal.csv"):
+        data = pd.read_csv("./data/braziljournal.csv")
+    else:
+        os.makedirs("./data")
+        data = pd.DataFrame(columns=["stock", "category", "title", "link"])
+
+    return data
+
+
+def update_dataset(data, scraped_data, stock):
+    # Delete the data for the current stock from the dataframe.
+    data = data[data["stock"] != stock]
+    df_stock = pd.DataFrame(scraped_data)
+    data = pd.concat([data, df_stock])
+
+    return data
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
     stocks = get_stocks_from_argv()
     logging.debug(f"Starting scraping for {stocks}.")
 
-    # The idea is to load the data from the CSV file if it exists, and append the new data to it.
-    # Using a real database would be better, as it would allow us to query the data more easily and use transactions.
-    if os.path.exists("./data/braziljournal.csv"):
-        data = pd.read_csv("./data/braziljournal.csv")
-    else:
-        data = pd.DataFrame(columns=["stock", "category", "title", "link"])
-
+    data = load_data()
     for stock in stocks:
         scraped_data = scrape_stock(stock)
-
-        # Delete the data for the current stock from the dataframe.
-        data = data[data["stock"] != stock]
-        df_stock = pd.DataFrame(scraped_data)
-        data = pd.concat([data, df_stock])
-
-    if not os.path.exists("./data"):
-        os.makedirs("./data")
+        data = update_dataset(data, scraped_data, stock)
 
     # Save the data to a CSV file.
-    df = pd.DataFrame(data)
-    df.to_csv("./data/braziljournal.csv", index=False)
+    data.to_csv("./data/braziljournal.csv", index=False)

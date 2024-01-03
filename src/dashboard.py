@@ -4,7 +4,7 @@ import logging
 from dash import Dash, html, dcc, callback, Output, Input
 import plotly.graph_objects as go
 import pandas as pd
-from integrations.braziljournal import scrape_stock
+from integrations import braziljournal as bj
 from lib.cache import cache_by_time
 
 logging.basicConfig(level=logging.DEBUG)
@@ -92,7 +92,14 @@ app.layout = html.Div(
 )
 def update_news(stock):
     try:
-        scraped_data = scrape_stock(stock, retry=False, timeout=1)
+        scraped_data = bj.scrape_stock(stock, retry=False, timeout=1)
+
+        # If we want, at this point we can update the dataset with the scraped data. I won't do that as I'm assuming we are going to run as a background process.
+        # Here is a snippet of how we could do that:
+        # > data = bj.load_data()
+        # > data = bj.update_dataset(bj.load_data(), scraped_data, stock)
+        # > data.to_csv("./data/braziljournal.csv", index=False)
+
         logging.debug(f"Scraped {stock} successfully.")
     except requests.exceptions.Timeout:
         logging.debug(f"Scraping {stock} timed out. Using last data available.")
