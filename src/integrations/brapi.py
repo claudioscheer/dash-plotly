@@ -35,7 +35,7 @@ def fetch_stock_data(stock, token):
     retries = RetryIfNot200(total=5, backoff_factor=2)
     requests_retry.mount("https://", HTTPAdapter(max_retries=retries))
 
-    url = f"https://brapi.dev/api/quote/{stock}?range=1d&interval=1d&token={token}"
+    url = f"https://brapi.dev/api/quote/{stock}?range=5d&interval=1d&token={token}"
     request = requests_retry.get(url)
     request.raise_for_status()
 
